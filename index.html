@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Generator</title>
+  <style>
+    body{
+        background: rgb(48, 82, 66);
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    }
+     h1{
+        color: aliceblue;
+        margin-top: 10px;
+        text-align: center;
+     }
+     .box{
+        border: 1px solid white;
+        width: 350px;
+        height: 400px;
+        margin: 0 auto;
+        padding: 20px;
+        text-align: center;
+        border-radius: 20px;
+     }
+     .box label{
+        color: aliceblue;
+        font-size: 25px;
+     }
+     .box input{
+        width: 340px;
+        font-size: 20px;
+        background: wheat;
+        color: black;
+        border: 1px solid black;
+        border-radius: 5px;
+        padding: 5px;
+     }
+     .box button{
+        width: 200px;
+        height: 25px;
+        font-size: 18px;
+        text-align: center;
+        display: block;
+        border-radius: 5px;
+        margin:  0 auto;
+     }
+     #qrcode-container{
+        
+        text-align: center;
+        display: block;
+        margin:  0 auto;
+        width: 340px;
+        height: 200px;
+     }
+     #qrcode-container #qrcode{
+        text-align: center;
+        display: block;
+        margin:  0 auto;
+        margin-left: 70px;
+       
+     }
+     .box button:hover{
+       background-color: rgb(3, 20, 15);
+       color: wheat;
+       width: 210px;
+     }
+    
+  </style>
+</head>
+<body>
+
+  <h1>QR Code Generator</h1>
+  <div class="box">
+  <label for="qr-text">Enter Text/URL:</label><br>
+  <input type="textare" id="qr-text" placeholder="e.g., https://www.example.com"><br><br>
+  <button onclick="generateQRCode()">Generate QR Code</button><br>
+
+  <div id="qrcode-container">
+    <div id="qrcode"></div>
+  </div><br>
+
+  <button id="download-button">Download QR Code</button>
+</div>
+  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+  <script>
+    let qrcode;
+    const qrcodeContainer = document.getElementById('qrcode');
+    const qrText = document.getElementById('qr-text');
+    const downloadButton = document.getElementById('download-button');
+
+    function generateQRCode() {
+      const text = qrText.value.trim();
+      if (!text) {
+        alert('Please enter some text or a URL.');
+        return;
+      }
+
+      qrcodeContainer.innerHTML = '';
+
+      qrcode = new QRCode(qrcodeContainer, {
+        text: text,
+        width: 200,
+        height: 200,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+
+      downloadButton.style.display = 'block';
+    }
+
+    downloadButton.addEventListener('click', () => {
+      if (!qrcode) {
+        alert('Please generate a QR code first.');
+        return;
+      }
+
+      const canvas = qrcodeContainer.querySelector('canvas');
+      if (canvas) {
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        link.download = 'qrcode.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        alert('Error: Could not find the QR code canvas.');
+      }
+    });
+  </script>
+
+</body>
